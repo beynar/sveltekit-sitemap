@@ -5,12 +5,12 @@ import { ViteDevServer } from 'vite';
 
 type RO_Sitemap = ReadonlyDeep<Sitemap>;
 type Sitemap = Record<string, boolean>;
+type Str<P> = P extends string ? P : never;
 type Routes<S extends RO_Sitemap> = Str<keyof S>;
 type DynamicRoutes<S extends RO_Sitemap, R extends Routes<S> = Routes<S>> = R extends `/${infer B}/[${infer P}]` ? `/${B}/[${P}]` : never;
 type Folders<S extends RO_Sitemap> = Str<{
     [K in keyof S]: S[K] extends true ? (K extends string ? (K extends "/" ? "/" : `${K}/`) : never) : never;
 }[keyof S]>;
-type Str<P> = P extends string ? P : never;
 type StaticRoutes<S extends RO_Sitemap, R extends Routes<S> = Routes<S>> = Str<R extends `/${infer B}/[${infer P}]` ? never : R>;
 type Priority = "1.0 " | "0.9" | "0.8" | "0.7" | "0.6" | "0.5" | "0.4" | "0.3" | "0.2" | "0.1" | "0.0";
 type Frequency = "Always" | "Hourly" | "Weekly" | "Monthly" | "Yearly" | "Never";
@@ -61,9 +61,6 @@ type UserAgent<S extends Sitemap> = {
     paths: RobotPaths<S>;
 };
 type SitemapParams<S extends RO_Sitemap> = {
-    disallow?: {
-        [K in Routes<S> | (string & {})]?: boolean;
-    };
     getRobots: (locals: App.Locals) => Promise<boolean | UserAgent<S> | UserAgent<S>[]>;
     getRoutes: (locals: App.Locals) => Promise<SetOptional<{
         [K in Routes<S>]: K extends StaticRoutes<S> ? RouteInfo<K> : RouteInfo<K>[];

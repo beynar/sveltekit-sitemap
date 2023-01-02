@@ -6,8 +6,7 @@ export const handle: Handle = sitemapHook(sitemap, {
 		return {
 			'/blogs/[id]': [{ path: '/blogs/test/test' }],
 			'/blogs/[id]/[post]': [{ path: '/blogs/test/test' }],
-			'/products/[id]': [{ path: '/products/test' }],
-			'/products': { path: '/products' }
+			'/products/[id]': [{ path: '/products/test' }]
 		};
 	},
 	getRobots: async () => {

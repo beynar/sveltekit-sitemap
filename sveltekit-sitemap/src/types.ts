@@ -1,7 +1,7 @@
 import { ReadonlyDeep, SetOptional } from "type-fest";
 export type RO_Sitemap = ReadonlyDeep<Sitemap>;
 export type Sitemap = Record<string, boolean>;
-
+export type Str<P> = P extends string ? P : never;
 export type Routes<S extends RO_Sitemap> = Str<keyof S>;
 export type DynamicRoutes<S extends RO_Sitemap, R extends Routes<S> = Routes<S>> = R extends `/${infer B}/[${infer P}]`
   ? `/${B}/[${P}]`
@@ -11,8 +11,6 @@ export type Folders<S extends RO_Sitemap> = Str<
     [K in keyof S]: S[K] extends true ? (K extends string ? (K extends "/" ? "/" : `${K}/`) : never) : never;
   }[keyof S]
 >;
-
-export type Str<P> = P extends string ? P : never;
 
 export type StaticRoutes<S extends RO_Sitemap, R extends Routes<S> = Routes<S>> = Str<
   R extends `/${infer B}/[${infer P}]` ? never : R
@@ -69,7 +67,6 @@ export type UserAgent<S extends Sitemap> = {
   paths: RobotPaths<S>;
 };
 export type SitemapParams<S extends RO_Sitemap> = {
-  disallow?: { [K in Routes<S> | (string & {})]?: boolean };
   getRobots: (locals: App.Locals) => Promise<boolean | UserAgent<S> | UserAgent<S>[]>;
   getRoutes: (locals: App.Locals) => Promise<
     SetOptional<

@@ -10,7 +10,6 @@ test("get simple structured routes", () => {
     "/products": true,
     "/products/[id]": false
   };
-
   expect(routes).toStrictEqual(result);
 });
 
