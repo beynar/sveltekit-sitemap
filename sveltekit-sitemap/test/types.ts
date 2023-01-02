@@ -1,4 +1,4 @@
-import { RO_Sitemap, DynamicRoutes, StaticRoutes, Routes, ReplaceParams, Folders, RobotPaths } from "../src";
+import { RO_Sitemap, DynamicRoutes, StaticRoutes, Routes, ReplaceParams, Folders } from "../src";
 
 type Expect<T extends true> = T;
 type Equal<X, Y> = (<T>() => T extends X ? 1 : 2) extends <T>() => T extends Y ? 1 : 2 ? true : false;

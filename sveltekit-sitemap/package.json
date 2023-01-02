@@ -1,6 +1,6 @@
 {
    "name": "sveltekit-sitemap",
-   "version": "1.0.5",
+   "version": "1.0.10",
    "description": "",
    "main": "./dist/index.mjs",
    "types": "./dist/index.d.ts",
@@ -19,15 +19,11 @@
       "vite": "^4.0.3",
       "vitest": "^0.26.3"
    },
-   "files": [
-      "./dist/index.mjs",
-      "./dist/index.d.ts"
-   ],
    "scripts": {
       "dev": "tsup --format esm --watch --dts",
       "build": "tsup --format esm --minify --dts",
       "test:ui": "vitest --ui",
-      "pub": "pnpm run build && node increment && cd dist && npm publish --access public",
+      "pub": "pnpm run build && node increment && npm publish --access public",
       "test": "vitest"
    },
    "tsup": {

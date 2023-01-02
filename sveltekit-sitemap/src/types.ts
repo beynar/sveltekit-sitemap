@@ -20,8 +20,8 @@ export type StaticRoutes<S extends RO_Sitemap, R extends Routes<S> = Routes<S>> 
 type Priority = "1.0 " | "0.9" | "0.8" | "0.7" | "0.6" | "0.5" | "0.4" | "0.3" | "0.2" | "0.1" | "0.0";
 
 type Frequency = "Always" | "Hourly" | "Weekly" | "Monthly" | "Yearly" | "Never";
-export type RouteInfo<P extends string> = {
-  path: ReplaceParams<P>;
+export type RouteDefinition<P extends string> = {
+  path: string;
   lastMod?: string;
   /**
    * 1. Always
@@ -72,7 +72,7 @@ export type UserAgent<S extends Sitemap> = {
 
 export type RouteDefinitions<S extends RO_Sitemap> = SetOptional<
   {
-    [K in Routes<S>]: K extends StaticRoutes<S> ? RouteInfo<K> : RouteInfo<K>[];
+    [K in Routes<S>]: K extends StaticRoutes<S> ? RouteDefinition<K> : RouteDefinition<K>[];
   },
   StaticRoutes<S>
 >;

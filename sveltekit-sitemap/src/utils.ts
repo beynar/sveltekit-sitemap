@@ -1,4 +1,4 @@
-import { RO_Sitemap, RouteDefinitions, RouteInfo, Sitemap, UserAgent } from "./types";
+import { RO_Sitemap, RouteDefinitions, RouteDefinition, Sitemap, UserAgent } from "./types";
 import fs from "fs";
 
 export const encodeXML = (str: string) => {
@@ -17,7 +17,7 @@ export const generateSitemap = <S extends RO_Sitemap>(
 ) => {
   // Instantiate a routes object with all the static routes
   // The will be override if you pass custom settings
-  const routes: Record<string, RouteInfo<string>> = Object.keys(sitemap).reduce((acc, route) => {
+  const routes: Record<string, RouteDefinition<string>> = Object.keys(sitemap).reduce((acc, route) => {
     const isDynamic = route.includes("[");
     if (!isDynamic) {
       Object.assign(acc, { [route]: { path: route } });
@@ -27,14 +27,14 @@ export const generateSitemap = <S extends RO_Sitemap>(
 
   // Add custom route data to the routes object
   Object.entries(sitemap).forEach(([route]) => {
-    const routeInfo = definitions[route as keyof typeof definitions];
-    if (routeInfo) {
-      if (Array.isArray(routeInfo)) {
-        routeInfo.forEach((route) => {
+    const RouteDefinition = definitions[route as keyof typeof definitions];
+    if (RouteDefinition) {
+      if (Array.isArray(RouteDefinition)) {
+        RouteDefinition.forEach((route) => {
           Object.assign(routes, { [route.path]: route });
         });
       } else {
-        Object.assign(routes, { [routeInfo.path]: routeInfo });
+        Object.assign(routes, { [RouteDefinition.path]: RouteDefinition });
       }
     }
   });

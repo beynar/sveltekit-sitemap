@@ -15,8 +15,8 @@ type Folders<S extends RO_Sitemap> = Str<{
 type StaticRoutes<S extends RO_Sitemap, R extends Routes<S> = Routes<S>> = Str<R extends `/${infer B}/[${infer P}]` ? never : R>;
 type Priority = "1.0 " | "0.9" | "0.8" | "0.7" | "0.6" | "0.5" | "0.4" | "0.3" | "0.2" | "0.1" | "0.0";
 type Frequency = "Always" | "Hourly" | "Weekly" | "Monthly" | "Yearly" | "Never";
-type RouteInfo<P extends string> = {
-    path: ReplaceParams<P>;
+type RouteDefinition<P extends string> = {
+    path: string;
     lastMod?: string;
     /**
      * 1. Always
@@ -63,7 +63,7 @@ type UserAgent<S extends Sitemap> = {
     paths: RobotPaths<S>;
 };
 type RouteDefinitions<S extends RO_Sitemap> = SetOptional<{
-    [K in Routes<S>]: K extends StaticRoutes<S> ? RouteInfo<K> : RouteInfo<K>[];
+    [K in Routes<S>]: K extends StaticRoutes<S> ? RouteDefinition<K> : RouteDefinition<K>[];
 }, StaticRoutes<S>>;
 type SitemapParams<S extends RO_Sitemap> = {
     getRobots: (event: Event) => Promise<boolean | UserAgent<S> | UserAgent<S>[]>;
@@ -83,8 +83,8 @@ declare const sitemapPlugin: ({ routesDir, sitemapFile }?: SitemapPluginParams) 
 };
 
 declare const encodeXML: (str: string) => string;
-declare const generateSitemap: <S extends type_fest_source_readonly_deep.ReadonlyObjectDeep<Sitemap>>(definitions: type_fest.Simplify<type_fest.Except<{ [K in Str<keyof S>]: K extends Str<Str<keyof S> extends infer T ? T extends Str<keyof S> ? T extends `/${infer B}/[${infer P}]` ? never : T : never : never> ? RouteInfo<K> : RouteInfo<K>[]; }, Str<Str<keyof S> extends infer T ? T extends Str<keyof S> ? T extends `/${infer B}/[${infer P}]` ? never : T : never : never>> & Partial<Pick<{ [K in Str<keyof S>]: K extends Str<Str<keyof S> extends infer T ? T extends Str<keyof S> ? T extends `/${infer B}/[${infer P}]` ? never : T : never : never> ? RouteInfo<K> : RouteInfo<K>[]; }, Str<Str<keyof S> extends infer T ? T extends Str<keyof S> ? T extends `/${infer B}/[${infer P}]` ? never : T : never : never>>>>, baseUrl: string, sitemap: S) => string;
+declare const generateSitemap: <S extends type_fest_source_readonly_deep.ReadonlyObjectDeep<Sitemap>>(definitions: type_fest.Simplify<type_fest.Except<{ [K in Str<keyof S>]: K extends Str<Str<keyof S> extends infer T ? T extends Str<keyof S> ? T extends `/${infer B}/[${infer P}]` ? never : T : never : never> ? RouteDefinition<K> : RouteDefinition<K>[]; }, Str<Str<keyof S> extends infer T ? T extends Str<keyof S> ? T extends `/${infer B}/[${infer P}]` ? never : T : never : never>> & Partial<Pick<{ [K in Str<keyof S>]: K extends Str<Str<keyof S> extends infer T ? T extends Str<keyof S> ? T extends `/${infer B}/[${infer P}]` ? never : T : never : never> ? RouteDefinition<K> : RouteDefinition<K>[]; }, Str<Str<keyof S> extends infer T ? T extends Str<keyof S> ? T extends `/${infer B}/[${infer P}]` ? never : T : never : never>>>>, baseUrl: string, sitemap: S) => string;
 declare const generateRobots: <S extends type_fest_source_readonly_deep.ReadonlyObjectDeep<Sitemap>>(robots: boolean | UserAgent<S> | UserAgent<S>[], baseUrl: string) => string;
 declare const getRoutes: (dir: string) => Sitemap;
 
-export { DynamicRoutes, Event, Folders, RO_Sitemap, ReplaceParams, RobotPaths, RouteDefinitions, RouteInfo, Routes, Sitemap, SitemapParams, SitemapPluginParams, StaticRoutes, Str, UserAgent, encodeXML, generateRobots, generateSitemap, getRoutes, sitemapHook, sitemapPlugin };
+export { DynamicRoutes, Event, Folders, RO_Sitemap, ReplaceParams, RobotPaths, RouteDefinition, RouteDefinitions, Routes, Sitemap, SitemapParams, SitemapPluginParams, StaticRoutes, Str, UserAgent, encodeXML, generateRobots, generateSitemap, getRoutes, sitemapHook, sitemapPlugin };

@@ -29,6 +29,6 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"sveltekit-sitemap": "1.0.5"
+		"sveltekit-sitemap": "1.0.10"
 	}
 }
