@@ -1,3 +1,4 @@
+import { RequestEvent } from "@sveltejs/kit";
 import { ReadonlyDeep, SetOptional } from "type-fest";
 export type RO_Sitemap = ReadonlyDeep<Sitemap>;
 export type Sitemap = Record<string, boolean>;
@@ -54,6 +55,8 @@ export type RouteInfo<P extends string> = {
     altText?: string | null;
   };
 };
+
+export type Event = RequestEvent<Partial<Record<string, string>>, string | null>;
 export type RobotPaths<S extends Sitemap> = {
   [K in Routes<S> | Folders<S> | "/$" | (string & {})]?: K extends DynamicRoutes<S> ? Record<string, boolean> : boolean;
 };
@@ -66,16 +69,16 @@ export type UserAgent<S extends Sitemap> = {
   crawlDelay?: number;
   paths: RobotPaths<S>;
 };
+
+export type RouteDefinitions<S extends RO_Sitemap> = SetOptional<
+  {
+    [K in Routes<S>]: K extends StaticRoutes<S> ? RouteInfo<K> : RouteInfo<K>[];
+  },
+  StaticRoutes<S>
+>;
 export type SitemapParams<S extends RO_Sitemap> = {
-  getRobots: (locals: App.Locals) => Promise<boolean | UserAgent<S> | UserAgent<S>[]>;
-  getRoutes: (locals: App.Locals) => Promise<
-    SetOptional<
-      {
-        [K in Routes<S>]: K extends StaticRoutes<S> ? RouteInfo<K> : RouteInfo<K>[];
-      },
-      StaticRoutes<S>
-    >
-  >;
+  getRobots: (event: Event) => Promise<boolean | UserAgent<S> | UserAgent<S>[]>;
+  getRoutes: (event: Event) => Promise<RouteDefinitions<S>>;
 };
 
 export type SitemapPluginParams = {

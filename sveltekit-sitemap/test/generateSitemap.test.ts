@@ -1,4 +1,4 @@
-import { getRoutes } from "../src/plugin";
+import { getRoutes } from "../src/utils";
 
 test("get simple structured routes", () => {
   const routes = getRoutes("./test/routes");
@@ -10,6 +10,7 @@ test("get simple structured routes", () => {
     "/products": true,
     "/products/[id]": false
   };
+
   expect(routes).toStrictEqual(result);
 });
 

@@ -1,6 +1,7 @@
 import * as type_fest_source_readonly_deep from 'type-fest/source/readonly-deep';
+import { RequestEvent, Handle } from '@sveltejs/kit';
+import * as type_fest from 'type-fest';
 import { ReadonlyDeep, SetOptional } from 'type-fest';
-import { Handle } from '@sveltejs/kit';
 import { ViteDevServer } from 'vite';
 
 type RO_Sitemap = ReadonlyDeep<Sitemap>;
@@ -49,6 +50,7 @@ type RouteInfo<P extends string> = {
         altText?: string | null;
     };
 };
+type Event = RequestEvent<Partial<Record<string, string>>, string | null>;
 type RobotPaths<S extends Sitemap> = {
     [K in Routes<S> | Folders<S> | "/$" | (string & {})]?: K extends DynamicRoutes<S> ? Record<string, boolean> : boolean;
 };
@@ -60,11 +62,12 @@ type UserAgent<S extends Sitemap> = {
     crawlDelay?: number;
     paths: RobotPaths<S>;
 };
+type RouteDefinitions<S extends RO_Sitemap> = SetOptional<{
+    [K in Routes<S>]: K extends StaticRoutes<S> ? RouteInfo<K> : RouteInfo<K>[];
+}, StaticRoutes<S>>;
 type SitemapParams<S extends RO_Sitemap> = {
-    getRobots: (locals: App.Locals) => Promise<boolean | UserAgent<S> | UserAgent<S>[]>;
-    getRoutes: (locals: App.Locals) => Promise<SetOptional<{
-        [K in Routes<S>]: K extends StaticRoutes<S> ? RouteInfo<K> : RouteInfo<K>[];
-    }, StaticRoutes<S>>>;
+    getRobots: (event: Event) => Promise<boolean | UserAgent<S> | UserAgent<S>[]>;
+    getRoutes: (event: Event) => Promise<RouteDefinitions<S>>;
 };
 type SitemapPluginParams = {
     routesDir?: string;
@@ -74,10 +77,14 @@ type ReplaceParams<S extends string, Delimiter extends string = "/"> = S extends
 
 declare const sitemapHook: <S extends type_fest_source_readonly_deep.ReadonlyObjectDeep<Sitemap>>(sitemap: S, params: SitemapParams<S>) => Handle;
 
-declare const getRoutes: (dir: string) => Sitemap;
 declare const sitemapPlugin: ({ routesDir, sitemapFile }?: SitemapPluginParams) => {
     name: string;
     configureServer(server: ViteDevServer): void;
 };
 
-export { DynamicRoutes, Folders, RO_Sitemap, ReplaceParams, RobotPaths, RouteInfo, Routes, Sitemap, SitemapParams, SitemapPluginParams, StaticRoutes, Str, UserAgent, getRoutes, sitemapHook, sitemapPlugin };
+declare const encodeXML: (str: string) => string;
+declare const generateSitemap: <S extends type_fest_source_readonly_deep.ReadonlyObjectDeep<Sitemap>>(definitions: type_fest.Simplify<type_fest.Except<{ [K in Str<keyof S>]: K extends Str<Str<keyof S> extends infer T ? T extends Str<keyof S> ? T extends `/${infer B}/[${infer P}]` ? never : T : never : never> ? RouteInfo<K> : RouteInfo<K>[]; }, Str<Str<keyof S> extends infer T ? T extends Str<keyof S> ? T extends `/${infer B}/[${infer P}]` ? never : T : never : never>> & Partial<Pick<{ [K in Str<keyof S>]: K extends Str<Str<keyof S> extends infer T ? T extends Str<keyof S> ? T extends `/${infer B}/[${infer P}]` ? never : T : never : never> ? RouteInfo<K> : RouteInfo<K>[]; }, Str<Str<keyof S> extends infer T ? T extends Str<keyof S> ? T extends `/${infer B}/[${infer P}]` ? never : T : never : never>>>>, baseUrl: string, sitemap: S) => string;
+declare const generateRobots: <S extends type_fest_source_readonly_deep.ReadonlyObjectDeep<Sitemap>>(robots: boolean | UserAgent<S> | UserAgent<S>[], baseUrl: string) => string;
+declare const getRoutes: (dir: string) => Sitemap;
+
+export { DynamicRoutes, Event, Folders, RO_Sitemap, ReplaceParams, RobotPaths, RouteDefinitions, RouteInfo, Routes, Sitemap, SitemapParams, SitemapPluginParams, StaticRoutes, Str, UserAgent, encodeXML, generateRobots, generateSitemap, getRoutes, sitemapHook, sitemapPlugin };
