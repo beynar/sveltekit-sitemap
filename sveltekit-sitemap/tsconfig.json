@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "checkJs": true,
+    "esModuleInterop": true,
+    "declaration": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "rootDir": "src",
+    "outDir": "dist",
+    "sourceMap": false,
+    "strict": true,
+    "moduleResolution": "node",
+    "module": "esnext",
+    "target": "es6",
+    "types": ["vitest/globals"]
+  },
+  "strict": true,
+  "exclude": ["dist"]
+}

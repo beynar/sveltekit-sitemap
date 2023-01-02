@@ -1,0 +1,41 @@
+{
+  "name": "sveltekit-sitemap",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "./dist/index.mjs",
+    "./dist/index.d.ts"
+  ],
+  "scripts": {
+    "dev": "tsup --format esm --watch --minify --dts",
+    "test:ui": "vitest --ui",
+    "test": "vitest"
+  },
+  "tsup": {
+    "entry": [
+      "src/index.ts"
+    ],
+    "splitting": false,
+    "dts": true,
+    "sourcemap": true,
+    "clean": true
+  },
+  "author": "beynar",
+  "license": "MIT",
+  "devDependencies": {
+    "@sveltejs/kit": "^1.0.1",
+    "@types/node": "^18.11.18",
+    "@vitest/ui": "^0.26.3",
+    "svelte": "^3.55.0",
+    "tsup": "^6.5.0",
+    "type-fest": "^3.5.0",
+    "typescript": "^4.9.4",
+    "vite": "^4.0.3",
+    "vitest": "^0.26.3"
+  },
+  "dependencies": {
+    "@types/filesystem": "^0.0.32"
+  }
+}

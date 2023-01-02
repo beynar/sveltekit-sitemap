@@ -1,0 +1,13 @@
+{
+  "name": "root",
+  "private": true,
+  "scripts": {
+    "dev:docs": "pnpm --filter 'docs' run dev",
+    "build:docs": "pnpm --filter 'docs' run pub",
+    "dev:sveltify-hooks": "pnpm --filter 'sveltekit-sitemap' run dev",
+    "pub:sveltify-hooks": "pnpm --filter 'sveltekit-sitemap'  run build"
+  },
+  "dependencies": {
+    "pnpm": "^7.18.2"
+  }
+}
