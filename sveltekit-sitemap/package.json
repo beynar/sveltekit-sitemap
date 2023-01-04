@@ -1,40 +1,40 @@
 {
-  "name": "sveltekit-sitemap",
-  "version": "1.0.10",
-  "description": "",
-  "main": "./dist/index.mjs",
-  "types": "./dist/index.d.ts",
-  "author": "beynar",
-  "repository": "https://github.com/beynar/sveltekit-sitemap",
-  "license": "MIT",
-  "devDependencies": {
-    "@sveltejs/kit": "^1.0.1",
-    "@types/node": "^18.11.18",
-    "@vitest/ui": "^0.26.3",
-    "semver": "^7.3.8",
-    "svelte": "^3.55.0",
-    "tsup": "^6.5.0",
-    "type-fest": "^3.5.0",
-    "typescript": "^4.9.4",
-    "vite": "^4.0.3",
-    "vitest": "^0.26.3"
-  },
-  "scripts": {
-    "dev": "tsup --format esm --watch --dts",
-    "build": "tsup --format esm",
-    "doc": "typedoc src/index.ts",
-    "test:ui": "vitest --ui",
-    "pub": "pnpm run build && node increment && npm publish --access public",
-    "test": "vitest"
-  },
-  "tsup": {
-    "entry": [
-      "src/index.ts"
-    ],
-    "minify": true,
-    "splitting": true,
-    "dts": true,
-    "sourcemap": true,
-    "clean": false
-  }
+   "name": "sveltekit-sitemap",
+   "version": "1.0.14",
+   "description": "",
+   "main": "./dist/index.mjs",
+   "types": "./dist/index.d.ts",
+   "author": "beynar",
+   "repository": "https://github.com/beynar/sveltekit-sitemap",
+   "license": "MIT",
+   "devDependencies": {
+      "@sveltejs/kit": "^1.0.1",
+      "@types/node": "^18.11.18",
+      "@vitest/ui": "^0.26.3",
+      "semver": "^7.3.8",
+      "svelte": "^3.55.0",
+      "tsup": "^6.5.0",
+      "type-fest": "^3.5.0",
+      "typescript": "^4.9.4",
+      "vite": "^4.0.3",
+      "vitest": "^0.26.3"
+   },
+   "scripts": {
+      "dev": "tsup --format esm --watch --dts",
+      "build": "tsup --format esm",
+      "doc": "typedoc src/index.ts",
+      "test:ui": "vitest --ui",
+      "pub": "pnpm run build && node increment && npm publish --access public",
+      "test": "vitest"
+   },
+   "tsup": {
+      "entry": [
+         "src/index.ts"
+      ],
+      "minify": true,
+      "splitting": true,
+      "dts": true,
+      "sourcemap": true,
+      "clean": false
+   }
 }

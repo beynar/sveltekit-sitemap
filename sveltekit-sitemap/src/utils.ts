@@ -144,14 +144,30 @@ ${disallow.map((route) => `Disallow: ${route}`).join("\n")}
 `.trim();
 };
 
+// function to recursively traverse a directory and return if some of the files are named +page.svelte
+const hasPageInside = (path: string): boolean => {
+  const files = fs.readdirSync(path);
+  if (files.some((file) => file === "+page.svelte")) return true;
+  return files.some((file: string) => {
+    const newPath = path + "/" + file;
+    if (fs.statSync(newPath).isDirectory()) {
+      return hasPageInside(newPath);
+    } else {
+      return false;
+    }
+  });
+};
+
 export const getRoutes = (dir: string): Sitemap => {
   let routes: Sitemap = {};
   const traverseRoutes = (path: string) => {
-    const id = path.replace(dir, "").replace("/+page.svelte", "");
-
-    if (fs.statSync(path).isDirectory()) {
+    const isDirectory = fs.statSync(path).isDirectory();
+    const isPageFolder = isDirectory && hasPageInside(path);
+    if (isDirectory && isPageFolder) {
       fs.readdirSync(path).forEach((file) => traverseRoutes(path + "/" + file));
     }
+
+    const id = path.replace(dir, "").replace("/+page.svelte", "");
 
     const dirBase = path.replace("/+page.svelte", "");
 
@@ -160,6 +176,8 @@ export const getRoutes = (dir: string): Sitemap => {
       fs.readdirSync(path.replace("/+page.svelte", "")).some((p) => {
         return fs.statSync(dirBase + "/" + p).isDirectory();
       });
+    if (!path.endsWith("+page.svelte") && !isFolder) return;
+
     Object.assign(routes, { [id || "/"]: isFolder });
   };
   fs.readdirSync(dir).forEach((file) => traverseRoutes(dir + "/" + file));
