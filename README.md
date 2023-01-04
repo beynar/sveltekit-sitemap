@@ -1,6 +1,6 @@
 # sveltekit-sitemap (and robots)
 
-This library is designed to help generate and maintain dynamic sitemap.xml and robots.txt for their SvelteKit apps.
+This library is designed to help generate and maintain dynamic sitemap.xml and robots.txt for SvelteKit apps.
 
 It's a combination of a Vite plugin and a Svelte-kit hook. The plugin is responsible to watch your routes folder to generate a typescript representation of it. The hook is responsible to deliver sitemap.xml and robots.txt responses based on your params and the former typescript sitemap.
 
