@@ -29,6 +29,6 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"sveltekit-sitemap": "1.0.10"
+		"sveltekit-sitemap": "workspace:1.0.10"
 	}
 }

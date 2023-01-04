@@ -1,5 +1,5 @@
 import { RequestEvent } from "@sveltejs/kit";
-import { ReadonlyDeep, SetOptional } from "type-fest";
+import { ReadonlyDeep } from "type-fest";
 export type RO_Sitemap = ReadonlyDeep<Sitemap>;
 export type Sitemap = Record<string, boolean>;
 export type Str<P> = P extends string ? P : never;
@@ -17,7 +17,7 @@ export type StaticRoutes<S extends RO_Sitemap, R extends Routes<S> = Routes<S>> 
   R extends `/${infer B}/[${infer P}]` ? never : R
 >;
 
-type Priority = "1.0 " | "0.9" | "0.8" | "0.7" | "0.6" | "0.5" | "0.4" | "0.3" | "0.2" | "0.1" | "0.0";
+type Priority = "1.0" | "0.9" | "0.8" | "0.7" | "0.6" | "0.5" | "0.4" | "0.3" | "0.2" | "0.1" | "0.0";
 
 type Frequency = "Always" | "Hourly" | "Weekly" | "Monthly" | "Yearly" | "Never";
 export type RouteDefinition<P extends string> = {
@@ -49,36 +49,34 @@ export type RouteDefinition<P extends string> = {
    * FAQs, outdated info, old press releases, completely static pages that are still relevant enough to keep from deleting entirely.
    */
   priority?: Priority;
-  image?: {
-    url: string;
-    title?: string | null;
-    altText?: string | null;
-  };
+  image?: RouteDefinitionImage;
 };
-
+export type RouteDefinitionImage = {
+  url: string;
+  title?: string | null;
+  altText?: string | null;
+};
 export type Event = RequestEvent<Partial<Record<string, string>>, string | null>;
-export type RobotPaths<S extends Sitemap> = {
-  [K in Routes<S> | Folders<S> | "/$" | (string & {})]?: K extends DynamicRoutes<S> ? Record<string, boolean> : boolean;
+export type PathDirectives<S extends Sitemap> = {
+  [K in Routes<S> | Folders<S> | "/$"]?: K extends DynamicRoutes<S> ? { [K in string]?: boolean } : boolean;
 };
 
-export type UserAgent<S extends Sitemap> = {
+export type UserAgentDirective<S extends Sitemap> = {
   userAgent?: string | string[];
   /**
    * How many seconds a crawler should wait before loading and crawling page content. Note that Googlebot does not acknowledge this command, but crawl rate can be set in Google Search Console.
    */
   crawlDelay?: number;
-  paths: RobotPaths<S>;
+  paths: PathDirectives<S>;
 };
 
-export type RouteDefinitions<S extends RO_Sitemap> = SetOptional<
-  {
-    [K in Routes<S>]: K extends StaticRoutes<S> ? RouteDefinition<K> : RouteDefinition<K>[];
-  },
-  StaticRoutes<S>
->;
+export type RouteDefinitions<S extends RO_Sitemap> = {
+  [K in Routes<S>]?: K extends StaticRoutes<S> ? RouteDefinition<K> : RouteDefinition<K>[];
+};
+
 export type SitemapParams<S extends RO_Sitemap> = {
-  getRobots: (event: Event) => Promise<boolean | UserAgent<S> | UserAgent<S>[]>;
-  getRoutes: (event: Event) => Promise<RouteDefinitions<S>>;
+  getRobots?: (event: Event) => Promise<boolean | UserAgentDirective<S> | UserAgentDirective<S>[]>;
+  getRoutes?: (event: Event) => Promise<RouteDefinitions<S>>;
 };
 
 export type SitemapPluginParams = {

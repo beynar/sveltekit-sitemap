@@ -1,4 +1,4 @@
-import { RO_Sitemap, RouteDefinitions, RouteDefinition, Sitemap, UserAgent } from "./types";
+import { RO_Sitemap, RouteDefinitions, RouteDefinition, Sitemap, UserAgentDirective } from "./types";
 import fs from "fs";
 
 export const encodeXML = (str: string) => {
@@ -20,7 +20,9 @@ export const generateSitemap = <S extends RO_Sitemap>(
   const routes: Record<string, RouteDefinition<string>> = Object.keys(sitemap).reduce((acc, route) => {
     const isDynamic = route.includes("[");
     if (!isDynamic) {
-      Object.assign(acc, { [route]: { path: route } });
+      Object.assign(acc, {
+        [route]: { path: route, priority: route === "/" ? "1.0" : "0.7" } as RouteDefinition<string>
+      });
     }
     return acc;
   }, {});
@@ -76,13 +78,13 @@ ${Object.values(routes)
 };
 
 export const generateRobots = <S extends RO_Sitemap>(
-  robots: boolean | UserAgent<S> | UserAgent<S>[],
+  robots: boolean | UserAgentDirective<S> | UserAgentDirective<S>[],
   baseUrl: string
 ) => {
   // Instantiate the agents to render array
   const agentsToRender: { agent: string; crawlDelay?: number; allow: string[]; disallow: string[] }[] = [];
 
-  const parseAgent = (agent: UserAgent<S>) => {
+  const parseAgent = (agent: UserAgentDirective<S>) => {
     const infos = Object.entries(agent.paths).reduce<{ allow: string[]; disallow: string[] }>(
       (acc, [route, allow]) => {
         if (allow) {

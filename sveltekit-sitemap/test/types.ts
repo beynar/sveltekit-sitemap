@@ -1,4 +1,4 @@
-import { RO_Sitemap, DynamicRoutes, StaticRoutes, Routes, ReplaceParams, Folders } from "../src";
+import { RO_Sitemap, DynamicRoutes, StaticRoutes, Routes, ReplaceParams, Folders, UserAgentDirective } from "../src";
 
 type Expect<T extends true> = T;
 type Equal<X, Y> = (<T>() => T extends X ? 1 : 2) extends <T>() => T extends Y ? 1 : 2 ? true : false;
@@ -23,3 +23,13 @@ type test = [
   Expect<Equal<ReplaceParams<"/blogs/">, `/blogs/`>>,
   Expect<Equal<Folders<S>, "/" | "/blogs/" | "/blogs/[id]/" | "/products/">>
 ];
+
+const testAgentDirective = {
+  userAgent: ["*"],
+  paths: {
+    "/blogs/": false,
+    "/blogs/[id]": {
+      "/blogs/id": true
+    }
+  }
+} satisfies UserAgentDirective<S>;

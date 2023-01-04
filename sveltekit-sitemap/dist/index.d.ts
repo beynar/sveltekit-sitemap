@@ -1,7 +1,6 @@
 import * as type_fest_source_readonly_deep from 'type-fest/source/readonly-deep';
 import { RequestEvent, Handle } from '@sveltejs/kit';
-import * as type_fest from 'type-fest';
-import { ReadonlyDeep, SetOptional } from 'type-fest';
+import { ReadonlyDeep } from 'type-fest';
 import { ViteDevServer } from 'vite';
 
 type RO_Sitemap = ReadonlyDeep<Sitemap>;
@@ -13,7 +12,7 @@ type Folders<S extends RO_Sitemap> = Str<{
     [K in keyof S]: S[K] extends true ? (K extends string ? (K extends "/" ? "/" : `${K}/`) : never) : never;
 }[keyof S]>;
 type StaticRoutes<S extends RO_Sitemap, R extends Routes<S> = Routes<S>> = Str<R extends `/${infer B}/[${infer P}]` ? never : R>;
-type Priority = "1.0 " | "0.9" | "0.8" | "0.7" | "0.6" | "0.5" | "0.4" | "0.3" | "0.2" | "0.1" | "0.0";
+type Priority = "1.0" | "0.9" | "0.8" | "0.7" | "0.6" | "0.5" | "0.4" | "0.3" | "0.2" | "0.1" | "0.0";
 type Frequency = "Always" | "Hourly" | "Weekly" | "Monthly" | "Yearly" | "Never";
 type RouteDefinition<P extends string> = {
     path: string;
@@ -44,30 +43,33 @@ type RouteDefinition<P extends string> = {
      * FAQs, outdated info, old press releases, completely static pages that are still relevant enough to keep from deleting entirely.
      */
     priority?: Priority;
-    image?: {
-        url: string;
-        title?: string | null;
-        altText?: string | null;
-    };
+    image?: RouteDefinitionImage;
+};
+type RouteDefinitionImage = {
+    url: string;
+    title?: string | null;
+    altText?: string | null;
 };
 type Event = RequestEvent<Partial<Record<string, string>>, string | null>;
-type RobotPaths<S extends Sitemap> = {
-    [K in Routes<S> | Folders<S> | "/$" | (string & {})]?: K extends DynamicRoutes<S> ? Record<string, boolean> : boolean;
+type PathDirectives<S extends Sitemap> = {
+    [K in Routes<S> | Folders<S> | "/$"]?: K extends DynamicRoutes<S> ? {
+        [K in string]?: boolean;
+    } : boolean;
 };
-type UserAgent<S extends Sitemap> = {
+type UserAgentDirective<S extends Sitemap> = {
     userAgent?: string | string[];
     /**
      * How many seconds a crawler should wait before loading and crawling page content. Note that Googlebot does not acknowledge this command, but crawl rate can be set in Google Search Console.
      */
     crawlDelay?: number;
-    paths: RobotPaths<S>;
+    paths: PathDirectives<S>;
 };
-type RouteDefinitions<S extends RO_Sitemap> = SetOptional<{
-    [K in Routes<S>]: K extends StaticRoutes<S> ? RouteDefinition<K> : RouteDefinition<K>[];
-}, StaticRoutes<S>>;
+type RouteDefinitions<S extends RO_Sitemap> = {
+    [K in Routes<S>]?: K extends StaticRoutes<S> ? RouteDefinition<K> : RouteDefinition<K>[];
+};
 type SitemapParams<S extends RO_Sitemap> = {
-    getRobots: (event: Event) => Promise<boolean | UserAgent<S> | UserAgent<S>[]>;
-    getRoutes: (event: Event) => Promise<RouteDefinitions<S>>;
+    getRobots?: (event: Event) => Promise<boolean | UserAgentDirective<S> | UserAgentDirective<S>[]>;
+    getRoutes?: (event: Event) => Promise<RouteDefinitions<S>>;
 };
 type SitemapPluginParams = {
     routesDir?: string;
@@ -75,7 +77,7 @@ type SitemapPluginParams = {
 };
 type ReplaceParams<S extends string, Delimiter extends string = "/"> = S extends `${infer Head}${Delimiter}${infer Tail}` ? Head extends `[${infer P}]` ? `${string}/${ReplaceParams<Tail, Delimiter>}` : `${Head}/${ReplaceParams<Tail, Delimiter>}` : S extends Delimiter ? "" : S extends `[${infer P}]` ? string : `${S}`;
 
-declare const sitemapHook: <S extends type_fest_source_readonly_deep.ReadonlyObjectDeep<Sitemap>>(sitemap: S, params: SitemapParams<S>) => Handle;
+declare const sitemapHook: <S extends type_fest_source_readonly_deep.ReadonlyObjectDeep<Sitemap>>(sitemap: S, params?: SitemapParams<S> | undefined) => Handle;
 
 declare const sitemapPlugin: ({ routesDir, sitemapFile }?: SitemapPluginParams) => {
     name: string;
@@ -83,8 +85,8 @@ declare const sitemapPlugin: ({ routesDir, sitemapFile }?: SitemapPluginParams) 
 };
 
 declare const encodeXML: (str: string) => string;
-declare const generateSitemap: <S extends type_fest_source_readonly_deep.ReadonlyObjectDeep<Sitemap>>(definitions: type_fest.Simplify<type_fest.Except<{ [K in Str<keyof S>]: K extends Str<Str<keyof S> extends infer T ? T extends Str<keyof S> ? T extends `/${infer B}/[${infer P}]` ? never : T : never : never> ? RouteDefinition<K> : RouteDefinition<K>[]; }, Str<Str<keyof S> extends infer T ? T extends Str<keyof S> ? T extends `/${infer B}/[${infer P}]` ? never : T : never : never>> & Partial<Pick<{ [K in Str<keyof S>]: K extends Str<Str<keyof S> extends infer T ? T extends Str<keyof S> ? T extends `/${infer B}/[${infer P}]` ? never : T : never : never> ? RouteDefinition<K> : RouteDefinition<K>[]; }, Str<Str<keyof S> extends infer T ? T extends Str<keyof S> ? T extends `/${infer B}/[${infer P}]` ? never : T : never : never>>>>, baseUrl: string, sitemap: S) => string;
-declare const generateRobots: <S extends type_fest_source_readonly_deep.ReadonlyObjectDeep<Sitemap>>(robots: boolean | UserAgent<S> | UserAgent<S>[], baseUrl: string) => string;
+declare const generateSitemap: <S extends type_fest_source_readonly_deep.ReadonlyObjectDeep<Sitemap>>(definitions: RouteDefinitions<S>, baseUrl: string, sitemap: S) => string;
+declare const generateRobots: <S extends type_fest_source_readonly_deep.ReadonlyObjectDeep<Sitemap>>(robots: boolean | UserAgentDirective<S> | UserAgentDirective<S>[], baseUrl: string) => string;
 declare const getRoutes: (dir: string) => Sitemap;
 
-export { DynamicRoutes, Event, Folders, RO_Sitemap, ReplaceParams, RobotPaths, RouteDefinition, RouteDefinitions, Routes, Sitemap, SitemapParams, SitemapPluginParams, StaticRoutes, Str, UserAgent, encodeXML, generateRobots, generateSitemap, getRoutes, sitemapHook, sitemapPlugin };
+export { DynamicRoutes, Event, Folders, PathDirectives, RO_Sitemap, ReplaceParams, RouteDefinition, RouteDefinitionImage, RouteDefinitions, Routes, Sitemap, SitemapParams, SitemapPluginParams, StaticRoutes, Str, UserAgentDirective, encodeXML, generateRobots, generateSitemap, getRoutes, sitemapHook, sitemapPlugin };
