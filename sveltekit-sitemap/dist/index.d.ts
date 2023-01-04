@@ -1,6 +1,6 @@
 import * as type_fest_source_readonly_deep from 'type-fest/source/readonly-deep';
 import { RequestEvent, Handle } from '@sveltejs/kit';
-import { ReadonlyDeep } from 'type-fest';
+import { ReadonlyDeep, SetOptional } from 'type-fest';
 import { ViteDevServer } from 'vite';
 
 type RO_Sitemap = ReadonlyDeep<Sitemap>;
@@ -14,7 +14,7 @@ type Folders<S extends RO_Sitemap> = Str<{
 type StaticRoutes<S extends RO_Sitemap, R extends Routes<S> = Routes<S>> = Str<R extends `/${infer B}/[${infer P}]` ? never : R>;
 type Priority = "1.0" | "0.9" | "0.8" | "0.7" | "0.6" | "0.5" | "0.4" | "0.3" | "0.2" | "0.1" | "0.0";
 type Frequency = "Always" | "Hourly" | "Weekly" | "Monthly" | "Yearly" | "Never";
-type RouteDefinition<P extends string> = {
+type RouteDefinition<S extends boolean> = SetOptional<{
     path: string;
     lastMod?: string;
     /**
@@ -44,7 +44,7 @@ type RouteDefinition<P extends string> = {
      */
     priority?: Priority;
     image?: RouteDefinitionImage;
-};
+}, S extends true ? "path" : never>;
 type RouteDefinitionImage = {
     url: string;
     title?: string | null;
@@ -65,7 +65,7 @@ type UserAgentDirective<S extends Sitemap> = {
     paths: PathDirectives<S>;
 };
 type RouteDefinitions<S extends RO_Sitemap> = {
-    [K in Routes<S>]?: K extends StaticRoutes<S> ? RouteDefinition<K> : RouteDefinition<K>[];
+    [K in Routes<S>]?: K extends StaticRoutes<S> ? RouteDefinition<true> : RouteDefinition<false>[];
 };
 type SitemapParams<S extends RO_Sitemap> = {
     getRobots?: (event: Event) => Promise<boolean | UserAgentDirective<S> | UserAgentDirective<S>[]>;

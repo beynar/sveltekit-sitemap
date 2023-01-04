@@ -1,5 +1,5 @@
 import { RequestEvent } from "@sveltejs/kit";
-import { ReadonlyDeep } from "type-fest";
+import { ReadonlyDeep, ConditionalExcept, SetOptional } from "type-fest";
 export type RO_Sitemap = ReadonlyDeep<Sitemap>;
 export type Sitemap = Record<string, boolean>;
 export type Str<P> = P extends string ? P : never;
@@ -20,37 +20,40 @@ export type StaticRoutes<S extends RO_Sitemap, R extends Routes<S> = Routes<S>> 
 type Priority = "1.0" | "0.9" | "0.8" | "0.7" | "0.6" | "0.5" | "0.4" | "0.3" | "0.2" | "0.1" | "0.0";
 
 type Frequency = "Always" | "Hourly" | "Weekly" | "Monthly" | "Yearly" | "Never";
-export type RouteDefinition<P extends string> = {
-  path: string;
-  lastMod?: string;
-  /**
-   * 1. Always
-   * These page types are constantly changing and will include index pages on major news publications, Google News, stock market data, and social bookmarking categories.
-   * 2. Hourly
-   * These pages update every hour and will also include major news publications as well as weather services and forums.
-   * 3. Daily
-   * Pages updated on average once per day and include things like blog posts, smaller web forum pages, message boards, and classified ads.
-   * 4. Weekly
-   * Updates typically occur once per week, these pages will include website directories, product pricing pages, and smaller blogs.
-   * 5. Monthly
-   * These are updated once per month, give or take, and include category pages, FAQs, and sometimes Help Desk articles that change slightly. Refer to the section above for guidelines on what is considered to be a change frequency trigger.
-   * 6. Yearly
-   * Updates  on these pages happen on an annual basis and are typically your contact page, “About” page, login pages, and registration pages.
-   * 7. Never
-   * As the name suggests, these pages never ever get updates. These are really old blog posts, press releases, notifications about updates that never need updating, and completely static pages.
-   */
-  changeFreq?: Frequency;
-  /**
-   * 1.0-0.8
-   * Homepage, product information, landing pages.
-   * 0.7-0.4
-   * News articles, some weather services, blog posts, pages that no site would be complete without.
-   * 0.3-0.0
-   * FAQs, outdated info, old press releases, completely static pages that are still relevant enough to keep from deleting entirely.
-   */
-  priority?: Priority;
-  image?: RouteDefinitionImage;
-};
+export type RouteDefinition<S extends boolean> = SetOptional<
+  {
+    path: string;
+    lastMod?: string;
+    /**
+     * 1. Always
+     * These page types are constantly changing and will include index pages on major news publications, Google News, stock market data, and social bookmarking categories.
+     * 2. Hourly
+     * These pages update every hour and will also include major news publications as well as weather services and forums.
+     * 3. Daily
+     * Pages updated on average once per day and include things like blog posts, smaller web forum pages, message boards, and classified ads.
+     * 4. Weekly
+     * Updates typically occur once per week, these pages will include website directories, product pricing pages, and smaller blogs.
+     * 5. Monthly
+     * These are updated once per month, give or take, and include category pages, FAQs, and sometimes Help Desk articles that change slightly. Refer to the section above for guidelines on what is considered to be a change frequency trigger.
+     * 6. Yearly
+     * Updates  on these pages happen on an annual basis and are typically your contact page, “About” page, login pages, and registration pages.
+     * 7. Never
+     * As the name suggests, these pages never ever get updates. These are really old blog posts, press releases, notifications about updates that never need updating, and completely static pages.
+     */
+    changeFreq?: Frequency;
+    /**
+     * 1.0-0.8
+     * Homepage, product information, landing pages.
+     * 0.7-0.4
+     * News articles, some weather services, blog posts, pages that no site would be complete without.
+     * 0.3-0.0
+     * FAQs, outdated info, old press releases, completely static pages that are still relevant enough to keep from deleting entirely.
+     */
+    priority?: Priority;
+    image?: RouteDefinitionImage;
+  },
+  S extends true ? "path" : never
+>;
 export type RouteDefinitionImage = {
   url: string;
   title?: string | null;
@@ -69,9 +72,8 @@ export type UserAgentDirective<S extends Sitemap> = {
   crawlDelay?: number;
   paths: PathDirectives<S>;
 };
-
 export type RouteDefinitions<S extends RO_Sitemap> = {
-  [K in Routes<S>]?: K extends StaticRoutes<S> ? RouteDefinition<K> : RouteDefinition<K>[];
+  [K in Routes<S>]?: K extends StaticRoutes<S> ? RouteDefinition<true> : RouteDefinition<false>[];
 };
 
 export type SitemapParams<S extends RO_Sitemap> = {

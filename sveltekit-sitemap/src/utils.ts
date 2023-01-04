@@ -32,11 +32,11 @@ export const generateSitemap = <S extends RO_Sitemap>(
     const RouteDefinition = definitions[route as keyof typeof definitions];
     if (RouteDefinition) {
       if (Array.isArray(RouteDefinition)) {
-        RouteDefinition.forEach((route) => {
-          Object.assign(routes, { [route.path]: route });
+        RouteDefinition.forEach((definition) => {
+          Object.assign(routes, { [definition.path]: definition });
         });
       } else {
-        Object.assign(routes, { [RouteDefinition.path]: RouteDefinition });
+        Object.assign(routes, { [RouteDefinition?.path || route]: RouteDefinition });
       }
     }
   });
@@ -54,10 +54,10 @@ xmlns:news="http://www.google.com/schemas/sitemap-news/0.9"
 xmlns:mobile="http://www.google.com/schemas/sitemap-mobile/1.0"
 xmlns:pagemap="http://www.google.com/schemas/sitemap-pagemap/1.0"
 xmlns:xhtml="http://www.w3.org/1999/xhtml">
-${Object.values(routes)
-  .map(({ path, priority, changeFreq, image, lastMod }) => {
+${Object.entries(routes)
+  .map(([r, { path, priority, changeFreq, image, lastMod }]) => {
     return `  <url>
-    <loc>${baseUrl}${path}</loc>
+    <loc>${baseUrl}${path || r}</loc>
   </url>
   ${lastMod ? `<lastmod>${lastMod}</lastmod>` : ""}
   ${priority ? `<priority>${priority}</priority>` : ""}
