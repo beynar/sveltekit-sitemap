@@ -16,7 +16,7 @@ export const sitemapHook =
       });
     }
 
-    if (event.url.pathname === "/robot.txt") {
+    if (event.url.pathname === "/robots.txt") {
       // Get dynamic robots directives
       const robots = params.getRobots ? await params.getRobots(event) : true;
 

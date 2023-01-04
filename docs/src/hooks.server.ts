@@ -20,8 +20,8 @@ export const handle: Handle = sitemapHook(sitemap, {
 			// ^-- Static routes are automaticly added to the sitemap. But if you want to customize them, you can pass a route definition object.
 			'/products/[id]': [
 				{ path: '/products/test' },
-				{ path: '/products/test' },
-				{ path: '/products/test' }
+				{ path: '/products/test-1' },
+				{ path: '/products/test-2' }
 			]
 			// ^-- For dynamic route you have to pass an array of route defintions
 		};
