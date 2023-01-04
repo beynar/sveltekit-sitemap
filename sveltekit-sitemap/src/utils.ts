@@ -17,11 +17,11 @@ export const generateSitemap = <S extends RO_Sitemap>(
 ) => {
   // Instantiate a routes object with all the static routes
   // The will be override if you pass custom settings
-  const routes: Record<string, RouteDefinition<string>> = Object.keys(sitemap).reduce((acc, route) => {
+  const routes: Record<string, RouteDefinition<boolean>> = Object.keys(sitemap).reduce((acc, route) => {
     const isDynamic = route.includes("[");
     if (!isDynamic) {
       Object.assign(acc, {
-        [route]: { path: route, priority: route === "/" ? "1.0" : "0.7" } as RouteDefinition<string>
+        [route]: { path: route, priority: route === "/" ? "1.0" : "0.7" } as RouteDefinition<boolean>
       });
     }
     return acc;
