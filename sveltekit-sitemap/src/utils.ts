@@ -1,5 +1,5 @@
-import { RO_Sitemap, RouteDefinitions, RouteDefinition, Sitemap, UserAgentDirective } from "./types";
-import fs from "fs";
+import fs from "fs"
+import { RO_Sitemap, RouteDefinition, RouteDefinitions, Sitemap, UserAgentDirective } from "./types"
 
 export const encodeXML = (str: string) => {
   return str
@@ -58,7 +58,6 @@ ${Object.entries(routes)
   .map(([r, { path, priority, changeFreq, image, lastMod }]) => {
     return `  <url>
     <loc>${baseUrl}${path || r}</loc>
-  </url>
   ${lastMod ? `<lastmod>${lastMod}</lastmod>` : ""}
   ${priority ? `<priority>${priority}</priority>` : ""}
   ${changeFreq ? `<changefreq>${changeFreq}</changefreq>` : ""}
@@ -71,7 +70,8 @@ ${Object.entries(routes)
       <image:caption>${encodeXML(image.altText ?? " ")}</image:caption>
     </image:image>`
       : ""
-  }`;
+  }
+  </url>`;
   })
   .join("\n")}
 </urlset>`;
