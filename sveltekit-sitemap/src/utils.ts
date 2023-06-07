@@ -58,10 +58,11 @@ ${Object.entries(routes)
   .map(([r, { path, priority, changeFreq, image, lastMod }]) => {
     return `  <url>
     <loc>${baseUrl}${path || r}</loc>
+    ${lastMod ? `<lastmod>${lastMod}</lastmod>` : ""}
+    ${priority ? `<priority>${priority}</priority>` : ""}
+    ${changeFreq ? `<changefreq>${changeFreq}</changefreq>` : ""}
   </url>
-  ${lastMod ? `<lastmod>${lastMod}</lastmod>` : ""}
-  ${priority ? `<priority>${priority}</priority>` : ""}
-  ${changeFreq ? `<changefreq>${changeFreq}</changefreq>` : ""}
+  
   ${
     image
       ? `
