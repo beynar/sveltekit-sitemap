@@ -1,5 +1,5 @@
-import fs from "fs"
-import { RO_Sitemap, RouteDefinition, RouteDefinitions, Sitemap, UserAgentDirective } from "./types"
+import { RO_Sitemap, RouteDefinitions, RouteDefinition, Sitemap, UserAgentDirective } from "./types";
+import fs from "fs";
 
 export const encodeXML = (str: string) => {
   return str
