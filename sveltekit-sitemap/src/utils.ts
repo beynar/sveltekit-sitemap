@@ -58,20 +58,18 @@ ${Object.entries(routes)
   .map(([r, { path, priority, changeFreq, image, lastMod }]) => {
     return `  <url>
     <loc>${baseUrl}${path || r}</loc>
-  </url>
-  ${lastMod ? `<lastmod>${lastMod}</lastmod>` : ""}
-  ${priority ? `<priority>${priority}</priority>` : ""}
-  ${changeFreq ? `<changefreq>${changeFreq}</changefreq>` : ""}
-  ${
-    image
-      ? `
-    <image:image>
-      <image:loc>${encodeXML(image.url)}</image:loc>
-      <image:title>${encodeXML(image.title ?? " ")}</image:title>
-      <image:caption>${encodeXML(image.altText ?? " ")}</image:caption>
-    </image:image>`
+    ${lastMod ? `<lastmod>${lastMod}</lastmod>` : ""}
+    ${priority ? `<priority>${priority}</priority>` : ""}
+    ${changeFreq ? `<changefreq>${changeFreq}</changefreq>` : ""}
+    ${image ? `
+      <image:image>
+        <image:loc>${encodeXML(image.url)}</image:loc>
+        <image:title>${encodeXML(image.title ?? " ")}</image:title>
+        <image:caption>${encodeXML(image.altText ?? " ")}</image:caption>
+      </image:image>`
       : ""
-  }`;
+    }`;
+  </url>
   })
   .join("\n")}
 </urlset>`;
